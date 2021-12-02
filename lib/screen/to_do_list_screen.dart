@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:to_do_list/to_do_item.dart';
 
 class ToDoListScreen extends StatefulWidget {
   const ToDoListScreen({Key? key}) : super(key: key);
@@ -9,9 +10,7 @@ class ToDoListScreen extends StatefulWidget {
 }
 
 class _ToDoListScreenState extends State<ToDoListScreen> {
-  var todo = [];
   String input = "";
-  var pressedIndex = -1;
 
   @override
   void initState() {
@@ -30,7 +29,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text("Add Todo List"),
+                  title: const Text("Add Todo List"),
                   content: TextField(
                     onChanged: (String value) {
                       input = value;
@@ -41,71 +40,72 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text("Cancel")),
+                        child: const Text("Cancel")),
                     TextButton(
                         onPressed: () {
                           setState(() {
-                            todo.add(input);
+                            TodoItem todo = TodoItem(name: input);
+                            todos.add(todo);
                           });
                           Navigator.of(context).pop();
                         },
-                        child: Text("Add")),
+                        child: const Text("Add")),
                   ],
                 );
               });
         },
-        child: Icon(
+        child: const Icon(
           Icons.add,
           color: Colors.white,
         ),
       ),
       body: ListView.builder(
           itemExtent: 70,
-          itemCount: todo.length,
+          itemCount: todos.length,
           itemBuilder: (BuildContext context, int index) {
             return Slidable(
-                key: Key(todo[index]),
-                startActionPane: ActionPane(
-                  extentRatio: 1/6,
-                  motion: const DrawerMotion(),
-                  children: [
-                    SlidableAction(
-                      onPressed: (BuildContext context) {
-                        setState(() {
-                          pressedIndex = index;
-                        });
-                      },
-                      backgroundColor: Color(0xFF00FF00),
-                      foregroundColor: Colors.white,
-                      icon: Icons.check,
-                    )
-                  ],
+              key: Key(todos[index].name),
+              startActionPane: ActionPane(
+                extentRatio: 1 / 6,
+                motion: const DrawerMotion(),
+                children: [
+                  SlidableAction(
+                    onPressed: (BuildContext context) {
+                      setState(() {
+                        todos[index].isConfirmed = !todos[index].isConfirmed;
+                      });
+                    },
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    icon: Icons.check,
+                  )
+                ],
+              ),
+              endActionPane: ActionPane(
+                extentRatio: 1 / 6,
+                motion: const DrawerMotion(),
+                children: [
+                  SlidableAction(
+                    onPressed: (BuildContext context) {
+                      setState(() {
+                        todos.removeAt(index);
+                      });
+                    },
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    icon: Icons.delete,
+                  )
+                ],
+              ),
+              //Item
+              child: Container(
+                color: todos[index].isConfirmed ? Colors.green : Colors.white,
+                margin: const EdgeInsets.only(left: 5, right: 5),
+                child: ListTile(
+                  title: Text(todos[index].name),
                 ),
-                endActionPane: ActionPane(
-                  extentRatio: 1/6,
-                  motion: const DrawerMotion(),
-                  children: [
-                    SlidableAction(
-                      onPressed: (BuildContext context) {
-                        setState(() {
-                          todo.removeAt(index);
-                        });
-                      },
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      icon: Icons.delete,
-                    )
-                  ],
-                ),
-                  //Item
-                  child: Container(
-                    color: pressedIndex == index ? Colors.green : Colors.white,
-                    child: ListTile(
-                      title: Text(todo[index]),
-
-                    ),
-                  ),
-                );
+              ),
+            );
           }),
     );
   }
