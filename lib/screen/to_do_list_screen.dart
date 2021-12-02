@@ -11,7 +11,7 @@ class ToDoListScreen extends StatefulWidget {
 class _ToDoListScreenState extends State<ToDoListScreen> {
   var todo = [];
   String input = "";
-  var itemColor = 0xFFFFFFFF;
+  var pressedIndex = -1;
 
   @override
   void initState() {
@@ -39,12 +39,17 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                   actions: [
                     TextButton(
                         onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("Cancel")),
+                    TextButton(
+                        onPressed: () {
                           setState(() {
                             todo.add(input);
                           });
                           Navigator.of(context).pop();
                         },
-                        child: Text("Add"))
+                        child: Text("Add")),
                   ],
                 );
               });
@@ -61,12 +66,13 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
             return Slidable(
                 key: Key(todo[index]),
                 startActionPane: ActionPane(
+                  extentRatio: 1/6,
                   motion: const DrawerMotion(),
                   children: [
                     SlidableAction(
                       onPressed: (BuildContext context) {
                         setState(() {
-                          itemColor = 0xFF00FF00;
+                          pressedIndex = index;
                         });
                       },
                       backgroundColor: Color(0xFF00FF00),
@@ -76,6 +82,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                   ],
                 ),
                 endActionPane: ActionPane(
+                  extentRatio: 1/6,
                   motion: const DrawerMotion(),
                   children: [
                     SlidableAction(
@@ -90,16 +97,15 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                     )
                   ],
                 ),
-                child: Card(
+                  //Item
                   child: Container(
-                    decoration: new BoxDecoration(
-                      color: Color(itemColor),
-                    ),
+                    color: pressedIndex == index ? Colors.green : Colors.white,
                     child: ListTile(
                       title: Text(todo[index]),
+
                     ),
                   ),
-                ));
+                );
           }),
     );
   }
