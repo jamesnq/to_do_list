@@ -8,6 +8,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
 
   @override
@@ -16,11 +17,10 @@ class MyApp extends StatelessWidget {
       title: 'To Do List',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.green,
         scaffoldBackgroundColor: Color(0xFFF5F5F5),
       ),
       home: const MainScreen(),
     );
   }
 }
-
