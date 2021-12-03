@@ -82,9 +82,45 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                 ],
               ),
               endActionPane: ActionPane(
-                extentRatio: 1 / 6,
+                extentRatio: 2 / 6,
                 motion: const DrawerMotion(),
                 children: [
+                  SlidableAction(
+                    onPressed: (BuildContext context) {
+                      setState(() {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Edit"),
+                                content: TextField(
+                                  onChanged: (String value) {
+                                    input = value;
+                                  },
+                                ),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("Cancel")),
+                                  TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          todos[index].name = input;
+                                        });
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("Done")),
+                                ],
+                              );
+                            });
+                      });
+                    },
+                    backgroundColor: Colors.lightGreen,
+                    foregroundColor: Colors.white,
+                    icon: Icons.mode_edit,
+                  ),
                   SlidableAction(
                     onPressed: (BuildContext context) {
                       setState(() {
@@ -94,7 +130,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                     backgroundColor: Colors.red,
                     foregroundColor: Colors.white,
                     icon: Icons.delete,
-                  )
+                  ),
                 ],
               ),
               //Item
